@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melanin Soul-RnB — Event Operations Checklist</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700;800&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:       #9e8a50;
+    --gold-light: #b9a46a;
+    --gold-pale:  #d4c38e;
+    --gold-bg:    #f0ead8;
+    --page-bg:    #f7f3ea;
+    --cream:      #fdfaf4;
+    --dark:       #1e1608;
+    --mid:        #4a3d25;
+    --muted:      #7a6a4a;
+    --border:     #d8ceae;
+    --row-alt:    #f9f6ef;
+    --done-bg:    #eef5ee;
+    --done-txt:   #6a8a6a;
+    --done-line:  #90af90;
+    --high:       #8b2a0e;
+    --high-bg:    #f7ece8;
+    --med:        #7a6010;
+    --med-bg:     #f5f0e0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--page-bg);
+    font-family: 'Jost', sans-serif;
+    color: var(--dark);
+    min-height: 100vh;
+  }
+
+  .document {
+    max-width: 900px;
+    margin: 0 auto;
+    background: var(--cream);
+    box-shadow: 0 4px 40px rgba(80,60,20,.13);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  .doc-header {
+    background: var(--gold);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: stretch;
+  }
+
+  .header-left {
+    padding: 32px 36px;
+    border-right: 1px solid rgba(255,255,255,.15);
+  }
+
+  .header-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.7);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 42px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.05;
+    letter-spacing: .3px;
+  }
+
+  .header-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,.75);
+    margin-top: 9px;
+    letter-spacing: .5px;
+    font-weight: 500;
+  }
+
+  .header-right {
+    padding: 28px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 14px;
+    min-width: 210px;
+  }
+
+  .doc-meta-row { text-align: right; }
+
+  .doc-meta-label {
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.55);
+    display: block;
+    margin-bottom: 3px;
+    font-weight: 600;
+  }
+
+  .doc-meta-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,.92);
+    letter-spacing: .2px;
+  }
+
+  /* ── INFO BAND ── */
+  .info-band {
+    background: var(--gold-bg);
+    border-bottom: 2px solid var(--gold-pale);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .info-cell {
+    padding: 18px 24px;
+    border-right: 1px solid var(--border);
+  }
+
+  .info-cell:last-child { border-right: none; }
+
+  .info-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 700;
+    margin-bottom: 5px;
+  }
+
+  .info-val {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--dark);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-section {
+    padding: 18px 36px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .progress-label {
+    font-size: 9px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .progress-bar-outer {
+    flex: 1;
+    height: 5px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  .progress-bar-inner {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    border-radius: 99px;
+    transition: width .35s ease;
+    width: 0%;
+  }
+
+  .progress-count {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--mid);
+    white-space: nowrap;
+  }
+
+  .progress-count strong { color: var(--gold); }
+
+  /* ── TOOLBAR ── */
+  .toolbar {
+    padding: 13px 36px;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-btn {
+    font-family: 'Jost', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 8px 16px;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: all .18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-outline:hover { background: var(--gold-bg); border-color: var(--gold-pale); color: var(--mid); }
+
+  .btn-solid { background: var(--gold); border: 1.5px solid var(--gold); color: #fff; }
+  .btn-solid:hover { background: var(--mid); border-color: var(--mid); }
+
+  .toolbar-note { font-size: 11px; color: var(--muted); font-style: italic; font-weight: 400; }
+
+  /* ── BODY ── */
+  .doc-body { padding: 32px 36px 60px; }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 22px; border: 1px solid var(--border); }
+
+  .section-header {
+    display: grid;
+    grid-template-columns: 44px 1fr auto 28px;
+    align-items: center;
+    background: var(--gold);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .section-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 800;
+    color: rgba(255,255,255,.55);
+    padding: 14px 0 14px 18px;
+    letter-spacing: 1px;
+  }
+
+  .section-title-wrap {
+    padding: 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .section-icon { font-size: 15px; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: .2px;
+  }
+
+  .section-badge {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    color: rgba(255,255,255,.7);
+    background: rgba(0,0,0,.15);
+    padding: 3px 10px;
+    border-radius: 1px;
+    white-space: nowrap;
+  }
+
+  .section-badge.complete { background: rgba(255,255,255,.25); color: #fff; }
+
+  .section-caret {
+    color: rgba(255,255,255,.55);
+    font-size: 10px;
+    padding: 14px 14px 14px 6px;
+    transition: transform .22s;
+    text-align: center;
+  }
+
+  .section.open .section-caret { transform: rotate(180deg); }
+
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section.open .section-body { display: block; }
+
+  /* ── TABLE HEAD ── */
+  .table-head {
+    display: grid;
+    grid-template-columns: 38px 1fr 90px;
+    background: var(--gold-bg);
+    border-bottom: 1px solid var(--border);
+    padding: 9px 16px 9px 14px;
+  }
+
+  .th {
+    font-size: 8.5px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--gold);
+  }
+
+  /* ── CHECK ITEMS ── */
+  .check-item {
+    display: grid;
+    grid-template-columns: 38px 1fr 90px;
+    align-items: start;
+    padding: 13px 16px 13px 14px;
+    border-bottom: 1px solid rgba(216,206,174,.4);
+    cursor: pointer;
+    transition: background .14s;
+  }
+
+  .check-item:last-child { border-bottom: none; }
+  .check-item:nth-child(even) { background: var(--row-alt); }
+  .check-item:hover { background: var(--gold-bg); }
+  .check-item.done { background: var(--done-bg) !important; }
+
+  .checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    flex-shrink: 0;
+    transition: all .18s;
+    background: #fff;
+  }
+
+  .check-item.done .checkbox { background: var(--gold); border-color: var(--gold); }
+
+  .check-icon { display: none; color: #fff; font-size: 10px; font-weight: 900; }
+  .check-item.done .check-icon { display: block; }
+
+  .check-content { padding-right: 10px; }
+
+  .check-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--dark);
+    line-height: 1.45;
+    letter-spacing: .05px;
+  }
+
+  .check-item.done .check-label {
+    color: var(--done-txt);
+    text-decoration: line-through;
+    text-decoration-color: var(--done-line);
+    font-weight: 500;
+  }
+
+  .check-note {
+    font-size: 11.5px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  .priority-tag {
+    font-size: 8.5px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-left: 2px solid;
+    margin-top: 6px;
+    display: inline-block;
+  }
+
+  .priority-tag.high { background: var(--high-bg); color: var(--high); border-color: var(--high); }
+  .priority-tag.medium { background: var(--med-bg); color: var(--med); border-color: var(--med); }
+
+  .priority-cell {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+    padding-top: 4px;
+  }
+
+  .p-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+  .p-dot.high { background: var(--high); }
+  .p-dot.medium { background: #c4970a; }
+  .p-dot.low { background: #6a9a6a; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    border-top: 2px solid var(--gold-pale);
+    padding: 16px 36px;
+    background: var(--gold-bg);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    color: var(--gold);
+    letter-spacing: .5px;
+    font-style: italic;
+    font-weight: 700;
+  }
+
+  .footer-ref { font-size: 11px; color: var(--muted); letter-spacing: .8px; font-weight: 500; }
+
+  @media print {
+    body { background: #fff; }
+    .document { box-shadow: none; }
+    .section-body { display: block !important; }
+    .toolbar { display: none; }
+    .section-header, .table-head, .doc-header, .info-band, .doc-footer, .check-item.done {
+      -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .doc-header { grid-template-columns: 1fr; }
+    .header-right { align-items: flex-start; padding-top: 0; border-top: 1px solid rgba(255,255,255,.15); min-width: unset; }
+    .info-band { grid-template-columns: 1fr; }
+    .info-cell { border-right: none; border-bottom: 1px solid var(--border); }
+    .doc-body { padding: 20px 14px 60px; }
+    .toolbar, .progress-section, .doc-footer { padding-left: 14px; padding-right: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="document">
+
+  <!-- HEADER -->
+  <div class="doc-header">
+    <div class="header-left">
+      <div class="header-tag">Event Operations Checklist</div>
+      <div class="header-title">Melanin<br>Soul-RnB</div>
+      <div class="header-sub">Feat. Blackroots Academy of Soul &amp; Blackroots Unlimited</div>
+    </div>
+    <div class="header-right">
+      <div class="doc-meta-row">
+        <span class="doc-meta-label">Event Date</span>
+        <span class="doc-meta-val">Saturday, 16 May 2026</span>
+      </div>
+      <div class="doc-meta-row">
+        <span class="doc-meta-label">Doors Open</span>
+        <span class="doc-meta-val">5:00 PM</span>
+      </div>
+      <div class="doc-meta-row">
+        <span class="doc-meta-label">Issued By</span>
+        <span class="doc-meta-val">The Alchemist Kitchen &amp; Bar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO BAND -->
+  <div class="info-band">
+    <div class="info-cell">
+      <div class="info-label">Venue</div>
+      <div class="info-val">The Alchemist Kitchen &amp; Bar</div>
+    </div>
+    <div class="info-cell">
+      <div class="info-label">Entry Pricing</div>
+      <div class="info-val">Single 50K · Table of 4 + Food 250K</div>
+    </div>
+    <div class="info-cell">
+      <div class="info-label">Ticketing Channels</div>
+      <div class="info-val">Quicket · MoMo 100601 · Airtel 1106373</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-section">
+    <div class="progress-label">Overall Progress</div>
+    <div class="progress-bar-outer">
+      <div class="progress-bar-inner" id="progressBar"></div>
+    </div>
+    <div class="progress-count" id="progressCount"><strong>0</strong> / <strong>0</strong> tasks</div>
+  </div>
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="toolbar-btn btn-outline" onclick="toggleAll()">Expand / Collapse All</button>
+      <button class="toolbar-btn btn-outline" onclick="resetAll()">Reset All</button>
+    </div>
+    <span class="toolbar-note">Progress saves automatically in your browser</span>
+    <button class="toolbar-btn btn-solid" onclick="window.print()">Print / Save PDF</button>
+  </div>
+
+  <!-- CHECKLIST -->
+  <div class="doc-body">
+    <div id="checklist"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="doc-footer">
+    <div class="footer-brand">Crafted Flavours · Curated Experiences · The Alchemist Events</div>
+    <div class="footer-ref">ckyomugisha@impala.co.ug</div>
+  </div>
+
+</div>
+
+<script>
+const sections = [
+  {
+    icon:"🎪", num:"01", title:"Stage & Sound Setup",
+    items:[
+      {label:"Stage structure assembled, secured, and safe to stand on",priority:"high"},
+      {label:"Performance area clear — minimum 4m × 4m free space confirmed",priority:"high"},
+      {label:"Stage lighting installed and tested — even coverage, no blind spots",priority:"high"},
+      {label:"Stage backdrop / Alchemist branding panel in place and visible",note:"Must be clear in photos from the floor."},
+      {label:"All cables taped down — full trip hazard check done",priority:"high"},
+      {label:"PA speakers and subwoofers positioned and tested",priority:"high"},
+      {label:"Mixing desk set up — sound engineer on site",priority:"high"},
+      {label:"All microphones tested: minimum 4 vocal mics + instrument mics",priority:"high"},
+      {label:"Stage monitors set per performer — levels confirmed with band",priority:"high"},
+      {label:"Full soundcheck completed with all performers",priority:"high",note:"Must finish at least 60 minutes before doors open."},
+      {label:"Spare microphones and cables on standby — minimum 2 backup mics"},
+      {label:"DJ equipment ready: decks, mixer, headphones — pre-show playlist loaded",note:"Background music playing before guests arrive."},
+      {label:"Green room stocked for performers",note:"Water, light snacks, towels, mirror."},
+    ]
+  },
+  {
+    icon:"🪑", num:"02", title:"Table Setup & Room Layout",
+    items:[
+      {label:"Floor plan approved — all tables and chairs set to plan",priority:"high"},
+      {label:"Table linen laid and pressed — no creases or stains"},
+      {label:"Centrepieces in place: candles or florals on every table"},
+      {label:"Cutlery, crockery, and polished glassware laid per cover"},
+      {label:"Table number cards visible on every table"},
+      {label:"Reserved signs placed on all pre-booked tables",note:"Cross-check against the reservations register."},
+      {label:"Personalised reservation name cards printed and placed correctly",priority:"high"},
+      {label:"Menus on tables — correct version confirmed"},
+      {label:"Napkins folded and placed per cover"},
+      {label:"Standing / bar area configured separately from seated section"},
+      {label:"All walkways clear — fire exit routes unobstructed",priority:"high"},
+      {label:"VIP section clearly marked if applicable"},
+    ]
+  },
+  {
+    icon:"🍹", num:"03", title:"Bar & Drinks Stock",
+    items:[
+      {label:"Full spirits stock confirmed: whisky, vodka, gin, rum, tequila, cognac",priority:"high"},
+      {label:"Wine confirmed: red, white, rosé, sparkling",priority:"high"},
+      {label:"Beer and cider chilled and stocked",priority:"high"},
+      {label:"Non-alcoholic options stocked: juices, sodas, water, mocktail bases",priority:"high"},
+      {label:"Single entry (50K) 2-drink inclusion confirmed and briefed to bar staff",priority:"high",note:"All bar staff must know what the 2 drinks are."},
+      {label:"Table of 4 (250K) drinks package allocated per booking",note:"Cross-check package contents against reservations list."},
+      {label:"Ice supply confirmed — enough for the full event",priority:"high"},
+      {label:"Glassware counted, polished, and in position"},
+      {label:"Bar garnishes prepped: limes, lemons, mint, cherries"},
+      {label:"Bar tools, pourers, shakers, and mats in place"},
+      {label:"POS system tested — all items correctly priced",priority:"high"},
+    ]
+  },
+  {
+    icon:"🍽️", num:"04", title:"Food & Kitchen",
+    items:[
+      {label:"Event menu finalised and signed off",priority:"high"},
+      {label:"All ingredients received, checked, and stored correctly",priority:"high"},
+      {label:"Prep quantities calculated based on confirmed covers plus buffer",note:"250K table package includes food — confirm volumes per booking."},
+      {label:"Kitchen team briefed on service timing and set-break windows",priority:"high"},
+      {label:"Table package plates sequenced for smooth service"},
+      {label:"Dietary requirements for reserved tables flagged to kitchen"},
+      {label:"Pass area clean, organised, and staffed"},
+      {label:"Food warmers operational and at correct temperature"},
+      {label:"Health and safety confirmed: temps, hygiene, PPE in place",priority:"high"},
+    ]
+  },
+  {
+    icon:"🎟️", num:"05", title:"Ticketing & Reservations",
+    items:[
+      {label:"Quicket sales reconciled — final headcount confirmed",priority:"high"},
+      {label:"MTN MoMo Pay (100601) payments verified against register",priority:"high"},
+      {label:"Airtel Money Pay (1106373) payments verified against register",priority:"high"},
+      {label:"Printed reservations register ready at the door by 4:30 PM",priority:"high"},
+      {label:"Guest list split: single entry vs. table bookings",note:"Table bookings: name, pax count, package, table number."},
+      {label:"Door check-in process briefed to all door staff",priority:"high"},
+      {label:"Wristbands or entry stamps ready at the door"},
+      {label:"Reservation name cards printed for all table bookings",priority:"high"},
+      {label:"Walk-in capacity confirmed and communicated to door team"},
+      {label:"Contact numbers active: 0777 194 006 · 0752 993 749 · 0787 320 677"},
+    ]
+  },
+  {
+    icon:"📣", num:"06", title:"Promotions & Invitations",
+    items:[
+      {label:"Posts published on Instagram, WhatsApp, and Facebook",note:"Confirm schedule was followed leading up to today."},
+      {label:"RSVP responses reconciled against confirmed covers",priority:"high"},
+      {label:"VIP guest invitations confirmed — arrivals and table allocations noted",priority:"high"},
+      {label:"Press / influencer arrivals confirmed and expected times noted"},
+      {label:"Sponsor or partner acknowledgement confirmed: MC mentions or signage"},
+      {label:"WhatsApp reminder broadcast sent to all confirmed reservations today",note:"Include: event time, dress code, parking, contact number."},
+    ]
+  },
+  {
+    icon:"👔", num:"07", title:"Staffing & Operations",
+    items:[
+      {label:"Full staff rota confirmed and distributed to all HODs",priority:"high"},
+      {label:"All-staff briefing at 3:00 PM",priority:"high",note:"Cover: positions, service standards, entry packages, emergencies."},
+      {label:"Security team confirmed and deployed by 4:30 PM",priority:"high"},
+      {label:"MC / host briefed on full running order",priority:"high"},
+      {label:"Printed running order given to all department heads",priority:"high"},
+      {label:"Emergency contacts list circulated to management"},
+      {label:"First aid kit stocked and location known to all staff",priority:"high"},
+      {label:"Cleaning team on standby throughout the event"},
+    ]
+  },
+  {
+    icon:"🏷️", num:"08", title:"Signage & Branding",
+    items:[
+      {label:"Event signage displayed at the entrance"},
+      {label:"Directional signs in place: toilets, bar, stage, exits"},
+      {label:"Table number signs visible from standing position"},
+      {label:"Reserved labels correctly placed and matched to register"},
+      {label:"Alchemist branding consistent throughout the venue"},
+      {label:"Photo backdrop set up for guest photography",note:"Drives organic social media reach during the event."},
+    ]
+  },
+  {
+    icon:"✅", num:"09", title:"Final Walkthrough — Management Sign-Off",
+    items:[
+      {label:"Full venue walkthrough completed by event manager",priority:"high",note:"Every zone: entrance, floor, bar, stage, kitchen, toilets, exits."},
+      {label:"All toilets clean, stocked, and functional",priority:"high"},
+      {label:"Fire exits marked, clear, and staff briefed on locations",priority:"high"},
+      {label:"Ambient lighting set — warm and welcoming for arriving guests",priority:"high"},
+      {label:"Background music playing at correct level",priority:"high"},
+      {label:"All staff in position by 4:30 PM"},
+      {label:"Management sign-off complete — doors open at 5:00 PM",priority:"high"},
+    ]
+  }
+];
+
+let allExpanded = false;
+
+function toggleAll() {
+  allExpanded = !allExpanded;
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('open', allExpanded));
+}
+
+function resetAll() {
+  if (!confirm('Reset all ticked items? This cannot be undone.')) return;
+  document.querySelectorAll('.check-item').forEach(el => el.classList.remove('done'));
+  localStorage.removeItem('msr2026');
+  updateProgress();
+}
+
+function updateProgress() {
+  const all = document.querySelectorAll('.check-item');
+  const done = document.querySelectorAll('.check-item.done');
+  const pct = all.length ? (done.length / all.length) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressCount').innerHTML =
+    `<strong>${done.length}</strong> / <strong>${all.length}</strong> tasks`;
+  document.querySelectorAll('.section').forEach(sec => {
+    const items = sec.querySelectorAll('.check-item');
+    const doneItems = sec.querySelectorAll('.check-item.done');
+    const badge = sec.querySelector('.section-badge');
+    badge.textContent = `${doneItems.length} / ${items.length}`;
+    badge.classList.toggle('complete', doneItems.length === items.length && items.length > 0);
+  });
+}
+
+function buildChecklist() {
+  const container = document.getElementById('checklist');
+  sections.forEach((sec, si) => {
+    const div = document.createElement('div');
+    div.className = 'section' + (si === 0 ? ' open' : '');
+    const itemsHTML = sec.items.map((item, ii) => {
+      let ptag = '';
+      if (item.priority === 'high') ptag = `<div class="priority-tag high">High Priority</div>`;
+      else if (item.priority === 'medium') ptag = `<div class="priority-tag medium">Medium</div>`;
+      const dot = item.priority || 'low';
+      return `<div class="check-item" onclick="toggleItem(this)" data-id="${si}-${ii}">
+        <div class="checkbox"><span class="check-icon">✓</span></div>
+        <div class="check-content">
+          <div class="check-label">${item.label}</div>
+          ${item.note ? `<div class="check-note">${item.note}</div>` : ''}
+          ${ptag}
+        </div>
+        <div class="priority-cell"><div class="p-dot ${dot}"></div></div>
+      </div>`;
+    }).join('');
+    div.innerHTML = `
+      <div class="section-header" onclick="toggleSection(this)">
+        <div class="section-num">${sec.num}</div>
+        <div class="section-title-wrap">
+          <span class="section-icon">${sec.icon}</span>
+          <span class="section-title">${sec.title}</span>
+        </div>
+        <div class="section-badge">0 / ${sec.items.length}</div>
+        <div class="section-caret">▼</div>
+      </div>
+      <div class="section-body">
+        <div class="table-head">
+          <div class="th"></div>
+          <div class="th">Task</div>
+          <div class="th" style="text-align:right">Priority</div>
+        </div>
+        ${itemsHTML}
+      </div>`;
+    container.appendChild(div);
+  });
+  updateProgress();
+}
+
+function toggleSection(header) { header.closest('.section').classList.toggle('open'); }
+
+function toggleItem(el) {
+  el.classList.toggle('done');
+  const state = JSON.parse(localStorage.getItem('msr2026') || '{}');
+  state[el.dataset.id] = el.classList.contains('done');
+  localStorage.setItem('msr2026', JSON.stringify(state));
+  updateProgress();
+}
+
+function loadState() {
+  const state = JSON.parse(localStorage.getItem('msr2026') || '{}');
+  Object.entries(state).forEach(([id, isDone]) => {
+    if (isDone) { const el = document.querySelector(`[data-id="${id}"]`); if (el) el.classList.add('done'); }
+  });
+  updateProgress();
+}
+
+buildChecklist();
+loadState();
+</script>
+</body>
+</html>
